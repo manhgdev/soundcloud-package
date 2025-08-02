@@ -99,7 +99,9 @@ curl --location '{{domain}}/v1/social/soundcloud/tracks/related' \
 curl --location '{{domain}}/v1/social/soundcloud/tracks/oembed' \
 --header 'Content-Type: application/json' \
 --data '{
-    "url": "https://soundcloud.com/forss/flickermood"
+    "url": "https://soundcloud.com/forss/flickermood",
+    "maxwidth": 600,
+    "auto_play": true
 }'
 
 # Get resolve url tracks 
