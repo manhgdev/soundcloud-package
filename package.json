@@ -1,0 +1,38 @@
+{
+  "name": "@manhgdev/soundcloud-web",
+  "version": "0.1.5",
+  "description": "JavaScript wrapper for SoundCloud API",
+  "main": "dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun build ./src/index.js --outdir ./dist --target node",
+    "prod": "npm publish",
+    "test": "bun test",
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write \"src/**/*.js\""
+  },
+  "keywords": [
+    "soundcloud",
+    "api",
+    "music",
+    "streaming",
+    "audio"
+  ],
+  "author": "manhg dev",
+  "license": "MIT",
+  "dependencies": {
+    "query-string": "^8.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
