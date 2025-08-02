@@ -25,3 +25,23 @@ test('tracks.getRelated should fetch related tracks', async () => {
   expect(result.collection).toBeDefined();
   expect(Array.isArray(result.collection)).toBe(true);
 }); 
+
+test('tracks.getOembed should fetch oembed', async () => {
+  const api = new SoundCloudAPI({ autoFetchClientId: true });
+  
+  const result = await api.tracks.getOembed("https://soundcloud.com/forss/flickermood");
+  console.log("Related Tracks Result:", JSON.stringify(result, null, 2).substring(0, 500) + "...");
+  
+  expect(result).toBeDefined();
+  expect(result.html).toBeDefined();
+}); 
+
+test('tracks.getResolveUrl should fetch ResolveUrl', async () => {
+  const api = new SoundCloudAPI({ autoFetchClientId: true });
+  
+  const result = await api.tracks.getResolveUrl("https://on.soundcloud.com/OiWhe68dniJyRQr7rm");
+  console.log("Related Tracks Result:", JSON.stringify(result, null, 2).substring(0, 500) + "...");
+  
+  expect(result).toBeDefined();
+  expect(result.permalink_url).toBeDefined();
+}); 

@@ -60,6 +60,59 @@ class TracksModule {
   }
 
   /**
+   * Lấy detail oembed của bài hát
+   * @param {string} oembed - oembed của bài hát
+   * @returns {Promise<string>} 
+   */
+  async getOembed(url, options = {}) {
+    try { 
+      const defaultOptions = {
+        format: "json",
+        url: url,
+        maxwidth: 600,
+        auto_play: false,
+        ...options
+      };
+
+      const trackInfo = await this.api.request(`/oembed`, defaultOptions, "https://soundcloud.com");
+
+      if (!trackInfo) {
+        throw new Error("Track oembed information not available");
+      }
+
+      return trackInfo;
+    } catch (error) {
+      throw new Error(`Failed to get oembed URL: ${error.message}`);
+    }
+  }
+
+   /**
+   * Lấy detail của bài hát
+   * @param {string} URL - URL của bài hát
+   * @returns {Promise<string>} 
+   */
+   async getResolveUrl(url) {
+    try {
+      let normalizedUrl = url;
+
+      if (url.includes('on.soundcloud.com')) {
+        const data = await this.getOembed(url);
+        const iframeSrc = data.html.match(/src="([^"]+)"/)[1];
+        normalizedUrl = decodeURIComponent(iframeSrc.split('&url=')[1].split('&')[0]);
+      }
+      const trackInfo = await this.api.request(`/resolve`, { url: normalizedUrl });
+
+      if (!trackInfo) {
+        throw new Error("Track Resolve information not available");
+      }
+
+      return trackInfo;
+    } catch (error) {
+      throw new Error(`Failed to get Resolve URL: ${error.message}`);
+    }
+  }
+
+  /**
    * Lấy URL stream của bài hát
    * @param {number} trackId - ID của bài hát
    * @returns {Promise<string>} URL stream

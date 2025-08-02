@@ -95,6 +95,20 @@ curl --location '{{domain}}/v1/social/soundcloud/tracks/related' \
     "linked_partitioning": 1
 }'
 
+# Get oembed tracks
+curl --location '{{domain}}/v1/social/soundcloud/tracks/oembed' \
+--header 'Content-Type: application/json' \
+--data '{
+    "url": "https://soundcloud.com/forss/flickermood"
+}'
+
+# Get resolve url tracks 
+curl --location '{{domain}}/v1/social/soundcloud/tracks/resolve' \
+--header 'Content-Type: application/json' \
+--data '{
+    "url": "https://soundcloud.com/forss/flickermood"
+}'
+
 # Get user info
 curl --location '{{domain}}/v1/social/soundcloud/user/info' \
 --header 'Content-Type: application/json' \

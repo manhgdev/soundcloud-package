@@ -40,7 +40,7 @@ class SoundCloudAPI {
     // Luôn fetch client ID khi autoFetchClientId là true
     if (this.autoFetchClientId) {
       // Không await ở đây để tránh làm constructor trở thành async
-      this._initClientId();
+      // this._initClientId();
     }
   }
 
@@ -96,7 +96,7 @@ class SoundCloudAPI {
     let script = "";
 
     try {
-      console.log("[SOUNDCLOUD] Fetching client ID from web...");
+      // console.log("[SOUNDCLOUD] Fetching client ID from web...");
       // Fetch the main SoundCloud page
       const response = await fetch(webURL, {
         headers: this.headers,
@@ -151,7 +151,7 @@ class SoundCloudAPI {
     }
   }
 
-  async request(endpoint, params = {}) {
+  async request(endpoint, params = {}, customBaseURL) {
     // Get the latest client ID before making the request
     const clientId = await this.getClientId();
 
@@ -171,8 +171,8 @@ class SoundCloudAPI {
       ...defaultParams,
       ...params,
     });
-
-    const url = `${this.baseURL}${endpoint}?${queryParams}`;
+    const url = customBaseURL ? `${customBaseURL}${endpoint}?${queryParams}` 
+              : `${this.baseURL}${endpoint}?${queryParams}`;
 
     try {
       const response = await fetch(url, {
