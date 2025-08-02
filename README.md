@@ -5,13 +5,13 @@ Package JavaScript để tương tác với SoundCloud API một cách dễ dàn
 ## Cài đặt
 
 ```bash
-bun add @manhgdev/soundcloud-package
+bun add @manhgdev/soundcloud-web
 ```
 
 ## Khởi tạo
 
 ```javascript
-import SoundCloudAPI from '@manhgdev/soundcloud-package';
+import SoundCloudAPI from '@manhgdev/soundcloud-web';
 
 const api = new SoundCloudAPI({
   clientId: 'YOUR_CLIENT_ID', // Tùy chọn
