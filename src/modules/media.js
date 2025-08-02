@@ -11,7 +11,7 @@ class MediaModule {
 
   async getPlaybackUrl(trackId) {
     try {
-      return await this.getMediaUrl(trackId, "hls");
+      return await this.getMediaUrl(null, trackId, "hls");
     } catch (error) {
       throw new Error(`Failed to get playback URL: ${error.message}`);
     }
@@ -19,21 +19,33 @@ class MediaModule {
 
   async getDownloadUrl(trackId) {
     try {
-      return await this.getMediaUrl(trackId, "progressive");
+      return await this.getMediaUrl(null, trackId, "progressive");
     } catch (error) {
       throw new Error(`Failed to get download URL: ${error.message}`);
     }
   }
 
-  async getMediaUrl(trackId, protocol = "hls") {
+  async getMediaUrl(url, trackId, protocol = "hls") {
     try {
-      const track = await this.api.tracks.getMultiple([trackId]);
+      let trackData;
+      if (url) {
+        const track = await this.api.tracks.getResolveUrl(url);
 
-      if (!track || !track.length || !track[0]) {
-        throw new Error("Track not found");
+        if (!track) {
+          throw new Error("Track not found");
+        }
+  
+        trackData = track;
       }
+      else{
+        const track = await this.api.tracks.getMultiple([trackId]);
 
-      const trackData = track[0];
+        if (!track || !track.length || !track[0]) {
+          throw new Error("Track not found");
+        }
+
+        trackData = track[0];
+      }
 
       if (
         !trackData.media ||
