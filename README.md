@@ -1,196 +1,313 @@
 # SoundCloud API Package
 
-Gói thư viện JavaScript giúp tương tác với SoundCloud API một cách dễ dàng.
-
-## Giới thiệu
-
-Dự án này cung cấp một wrapper cho SoundCloud API, giúp các nhà phát triển có thể tích hợp các tính năng của SoundCloud vào ứng dụng của họ một cách đơn giản và hiệu quả.
-
-## Tính năng
-
-- Tìm kiếm bài hát, album, playlist và người dùng
-- Phát nhạc và quản lý trình phát
-- Tương tác với người dùng (thích, bình luận, repost)
-- Quản lý playlist và collection
-- Xem thông tin chi tiết về track, người dùng và playlist
-- Tự động lấy và cập nhật client ID
+Package JavaScript để tương tác với SoundCloud API một cách dễ dàng và hiệu quả.
 
 ## Cài đặt
 
 ```bash
-bun add @manhgdev/soundcloud-web
+bun add @manhgdev/soundcloud-package
 ```
 
 ## Khởi tạo
 
 ```javascript
-import SoundCloudAPI from '@manhgdev/soundcloud-web';
+import SoundCloudAPI from '@manhgdev/soundcloud-package';
 
-// Khởi tạo với tự động lấy client ID
-const sc = new SoundCloudAPI({
-  autoFetchClientId: true // Mặc định là true, tự động lấy và cập nhật client ID
+const api = new SoundCloudAPI({
+  clientId: 'YOUR_CLIENT_ID', // Tùy chọn
+  autoFetchClientId: true // Tự động lấy client ID
 });
-
-// Hoặc khởi tạo với client ID cụ thể
-const sc2 = new SoundCloudAPI({
-  clientId: 'YOUR_CLIENT_ID',
-  autoFetchClientId: false // Tắt tính năng tự động lấy client ID
-});
-
-// Lấy client ID hiện tại
-const clientId = await sc.getClientId();
 ```
 
-## Hướng dẫn sử dụng chi tiết
+## Cách sử dụng
 
-### Module Search
+### Search Module
 
-Module này cho phép tìm kiếm các nội dung trên SoundCloud.
-
+#### Tìm kiếm tất cả
 ```javascript
-// Tìm kiếm tất cả (tracks, users, albums, playlists)
-const results = await sc.search.all('skrillex', { limit: 10 });
-
-// Tìm kiếm bài hát
-const tracks = await sc.search.tracks('dance & edm', {
-  limit: 10,
-  sort: 'popular'
-});
-
-// Tìm kiếm người dùng
-const users = await sc.search.users('skrillex');
-
-// Tìm kiếm album
-const albums = await sc.search.albums('skrillex album');
-
-// Tìm kiếm playlist
-const playlists = await sc.search.playlists('workout playlist');
-
-// Tìm kiếm theo thể loại
-const electronicTracks = await sc.search.byGenre('electronic', {
+const result = await api.search.all('skrillex', {
   limit: 20,
-  sort: 'popular'
+  offset: 0,
+  facet: 'model',
+  linked_partitioning: 1
 });
 ```
 
-### Module Tracks
-
-Module này cho phép làm việc với các bài hát trên SoundCloud.
-
+#### Tìm kiếm bài hát
 ```javascript
-// Lấy nhiều bài hát theo ID
-const tracks = await sc.tracks.getMultiple([123456, 789012]);
-
-// Lấy bình luận của bài hát
-const comments = await sc.tracks.getComments(123456, { limit: 10 });
-
-// Lấy các bài hát liên quan
-const relatedTracks = await sc.tracks.getRelated(123456, { limit: 10 });
+const tracks = await api.search.tracks('skrillex', {
+  limit: 20,
+  offset: 0,
+  facet: 'genre',
+  linked_partitioning: 1
+});
 ```
 
-### Module Users
-
-Module này cho phép làm việc với người dùng trên SoundCloud.
-
+#### Tìm kiếm người dùng
 ```javascript
-// Lấy thông tin người dùng
-const user = await sc.users.getUser(123456);
-
-// Lấy spotlight của người dùng
-const spotlight = await sc.users.getSpotlight(123456);
-
-// Lấy danh sách người dùng được đề xuất
-const featuredProfiles = await sc.users.getFeaturedProfiles(123456);
-
-// Lấy danh sách bài hát được thích
-const likes = await sc.users.getLikes(123456, { limit: 10 });
-
-// Lấy danh sách người đang theo dõi
-const followings = await sc.users.getFollowings(123456, { limit: 10 });
-
-// Lấy danh sách nghệ sĩ liên quan
-const relatedArtists = await sc.users.getRelatedArtists(123456, { limit: 10 });
-
-// Lấy bình luận của người dùng
-const comments = await sc.users.getComments(123456, { limit: 10 });
-
-// Lấy stream của người dùng
-const stream = await sc.users.getStream(123456, { limit: 10 });
-
-// Lấy bài hát nổi bật của người dùng
-const topTracks = await sc.users.getTopTracks(123456, { limit: 10 });
-
-// Lấy tất cả bài hát của người dùng
-const userTracks = await sc.users.getTracks(123456, { limit: 10 });
-
-// Lấy playlist của người dùng
-const userPlaylists = await sc.users.getPlaylists(123456, { limit: 10 });
-
-// Lấy thông tin hồ sơ web của người dùng
-const webProfiles = await sc.users.getWebProfiles(123456);
+const users = await api.search.users('skrillex', {
+  limit: 20,
+  offset: 0,
+  facet: 'place',
+  linked_partitioning: 1
+});
 ```
 
-### Module Playlists
-
-Module này cho phép làm việc với playlist trên SoundCloud.
-
+#### Tìm kiếm album
 ```javascript
-// Lấy thông tin playlist
-const playlist = await sc.playlists.getPlaylist(123456);
-
-// Lấy danh sách người thích playlist
-const likers = await sc.playlists.getLikers(123456, { limit: 10 });
-
-// Lấy danh sách người repost playlist
-const reposters = await sc.playlists.getReposters(123456, { limit: 10 });
-
-// Lấy playlist theo thể loại
-const genrePlaylists = await sc.playlists.getByGenre('electronic', { limit: 10 });
+const albums = await api.search.albums('skrillex', {
+  limit: 20,
+  offset: 0,
+  facet: 'genre',
+  linked_partitioning: 1
+});
 ```
 
-### Module Media
-
-Module này cho phép làm việc với media và streaming trên SoundCloud.
-
+#### Tìm kiếm playlist
 ```javascript
-// Lấy URL phát trực tuyến cho bài hát
-const playbackUrl = await sc.media.getPlaybackUrl(123456);
-
-// Lấy URL tải xuống cho bài hát
-const downloadUrl = await sc.media.getDownloadUrl(123456);
-
-// Phương thức chung để lấy URL media với protocol tùy chọn
-const mediaUrl = await sc.media.getMediaUrl(123456, 'hls'); // hoặc 'progressive'
+const playlists = await api.search.playlists('workout', {
+  limit: 20,
+  offset: 0,
+  facet: 'genre',
+  linked_partitioning: 1
+});
 ```
 
-### Module Discover
-
-Module này cho phép khám phá nội dung trên SoundCloud.
-
+#### Tìm kiếm bài hát theo thể loại
 ```javascript
-// Lấy nội dung trang chủ
-const homeContent = await sc.discover.getHomeContent();
-
-// Lấy bài hát mới theo thể loại
-const recentTracks = await sc.discover.getRecentTracks('electronic');
-
-// Lấy bài hát mới theo quốc gia
-const recentTracksByCountry = await sc.discover.getRecentTracksByCountry();
+const tracks = await api.search.byGenre('electronic', {
+  limit: 10,
+  offset: 0,
+  sort: 'popular',
+  linked_partitioning: 1
+});
 ```
 
-## Tự động lấy Client ID
+### Tracks Module
 
-Package hỗ trợ tự động lấy và cập nhật client ID từ trang web SoundCloud. Tính năng này:
+#### Lấy nhiều bài hát
+```javascript
+const tracks = await api.tracks.getMultiple([956017639, 789012]);
+```
 
-- Tự động lấy client ID mới khi cần thiết
-- Lưu trữ client ID trong bộ nhớ tạm với thời gian hết hạn 3 phút
-- Tự động làm mới client ID khi hết hạn
-- Sử dụng client ID dự phòng nếu không thể lấy được client ID mới
+#### Lấy bình luận của bài hát
+```javascript
+const comments = await api.tracks.getComments(956017639, {
+  threaded: 0,
+  limit: 200,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
 
-## Tài liệu API
+#### Lấy bài hát liên quan
+```javascript
+const related = await api.tracks.getRelated(956017639, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
 
-Xem chi tiết các endpoint API trong file [endpoint.md](./endpoint.md)
+### Users Module
 
-## Giấy phép
+#### Lấy thông tin người dùng
+```javascript
+const user = await api.users.getUser(856062);
+```
+
+#### Lấy spotlight của người dùng
+```javascript
+const spotlight = await api.users.getSpotlight(856062, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy hồ sơ nổi bật của người dùng
+```javascript
+const profiles = await api.users.getFeaturedProfiles(856062, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy danh sách bài hát được thích
+```javascript
+const likes = await api.users.getLikes(856062, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy danh sách người đang theo dõi
+```javascript
+const followings = await api.users.getFollowings(856062, {
+  limit: 3,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy danh sách nghệ sĩ liên quan
+```javascript
+const artists = await api.users.getRelatedArtists(856062, {
+  creators_only: false,
+  page_size: 12,
+  limit: 12,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy bình luận của người dùng
+```javascript
+const comments = await api.users.getComments(856062, {
+  limit: 20,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy stream của người dùng
+```javascript
+const stream = await api.users.getStream(856062, {
+  limit: 20,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy bài hát nổi bật của người dùng
+```javascript
+const topTracks = await api.users.getTopTracks(856062, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy bài hát của người dùng
+```javascript
+const tracks = await api.users.getTracks(856062, {
+  limit: 20
+});
+```
+
+#### Lấy playlist của người dùng
+```javascript
+const playlists = await api.users.getPlaylists(856062, {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy hồ sơ web của người dùng
+```javascript
+const webProfiles = await api.users.getWebProfiles(856062);
+```
+
+### Playlists Module
+
+#### Lấy thông tin playlist
+```javascript
+const playlist = await api.playlists.getPlaylist(1236491080, {
+  representation: 'full'
+});
+```
+
+#### Lấy danh sách người thích playlist
+```javascript
+const likers = await api.playlists.getLikers(1236491080, {
+  limit: 9,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy danh sách người repost playlist
+```javascript
+const reposters = await api.playlists.getReposters(1236491080, {
+  limit: 9,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy playlist theo thể loại
+```javascript
+const playlists = await api.playlists.getByGenre('electronic', {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+### Media Module
+
+#### Lấy URL phát trực tuyến
+```javascript
+const playbackUrl = await api.media.getPlaybackUrl(956017639);
+```
+
+#### Lấy URL tải xuống
+```javascript
+const downloadUrl = await api.media.getDownloadUrl(956017639);
+```
+
+### Discover Module
+
+#### Lấy nội dung trang chủ
+```javascript
+const homeContent = await api.discover.getHomeContent({
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy bài hát mới theo thể loại
+```javascript
+const recentTracks = await api.discover.getRecentTracks('electronic', {
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+#### Lấy bài hát mới theo quốc gia
+```javascript
+const countryTracks = await api.discover.getRecentTracksByCountry({
+  limit: 10,
+  offset: 0,
+  linked_partitioning: 1
+});
+```
+
+## Tham số mặc định
+
+Tất cả các phương thức đều có tham số mặc định phù hợp:
+
+- `limit`: Số lượng kết quả tối đa (thường là 10-20)
+- `offset`: Vị trí bắt đầu (mặc định: 0)
+- `linked_partitioning`: Phân trang liên kết (mặc định: 1)
+- `facet`: Loại facet cho search (mặc định: 'model', 'genre', 'place')
+- `threaded`: Hiển thị theo thread cho comments (mặc định: 0)
+- `creators_only`: Chỉ hiển thị người tạo (mặc định: false)
+- `page_size`: Kích thước trang (mặc định: 12)
+- `representation`: Kiểu biểu diễn (mặc định: 'full')
+
+## Lưu ý
+
+- Package tự động lấy và cache client ID từ SoundCloud
+- Tất cả các request đều có timeout và retry logic
+- Hỗ trợ đầy đủ các endpoint của SoundCloud API v2
+- Có JSDoc đầy đủ cho tất cả các phương thức
+
+## License
 
 MIT
