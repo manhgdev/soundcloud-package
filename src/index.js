@@ -7,8 +7,29 @@ import PlaylistsModule from "./modules/playlists.js";
 import MediaModule from "./modules/media.js";
 import DiscoverModule from "./modules/discover.js";
 
+// Map lưu trữ các instance theo options hash
+const instances = new Map();
+
+// Hàm tạo hash key từ options
+function createOptionsHash(options) {
+  const normalizedOptions = {
+    clientId: options.clientId || null,
+    appVersion: options.appVersion || "1753870647",
+    appLocale: options.appLocale || "en",
+    autoFetchClientId: options.autoFetchClientId !== false,
+  };
+  return JSON.stringify(normalizedOptions);
+}
+
 class SoundCloudAPI {
   constructor(options = {}) {
+    const optionsHash = createOptionsHash(options);
+    
+    // Nếu đã có instance với options này, trả về instance đó
+    if (instances.has(optionsHash)) {
+      return instances.get(optionsHash);
+    }
+    
     // Chỉ sử dụng client ID được cung cấp, không có giá trị mặc định
     this.clientId = options.clientId;
     this.baseURL = "https://api-v2.soundcloud.com";
@@ -42,6 +63,23 @@ class SoundCloudAPI {
       // Không await ở đây để tránh làm constructor trở thành async
       // this._initClientId();
     }
+    
+    // Lưu instance này vào map theo options hash
+    instances.set(optionsHash, this);
+  }
+
+  // Reset tất cả instances (chủ yếu để phục vụ testing)
+  static resetInstances() {
+    instances.clear();
+  }
+  
+  // Phương thức tĩnh để lấy instance theo options
+  static getInstance(options = {}) {
+    const optionsHash = createOptionsHash(options);
+    if (!instances.has(optionsHash)) {
+      new SoundCloudAPI(options); // Constructor sẽ tự thêm vào map
+    }
+    return instances.get(optionsHash);
   }
 
   async _initClientId() {
